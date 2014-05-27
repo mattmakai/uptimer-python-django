@@ -7,22 +7,43 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
+import os
+from os import environ
+from os.path import abspath, basename, dirname, join, normpath
+from sys import path
+
+from django.core.exceptions import ImproperlyConfigured
+
+import dj_database_url
+
+
+def get_env_setting(setting):
+    """ Get the environment setting or return exception """
+    try:
+        var_set = environ[setting]
+        if var_set == 'true' or var_set == 'True':
+            return True
+        elif var_set == 'false' or var_set == 'False':
+            return False
+        return var_set
+    except KeyError:
+        error_msg = "Set the %s env variable" % setting
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'n9*ihg+y!tkm@o)!7t5)%^@b3bp6mg5=suhs@do&@w6^&i@$92'
+SECRET_KEY = get_env_setting("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env_setting("SECRET_KEY")
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
 
@@ -80,4 +101,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = get_env_setting("STATIC_URL")

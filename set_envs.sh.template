@@ -1,0 +1,5 @@
+# Django settings
+export DEBUG=True
+export DATABASE_URL='postgres://dbuser@localhost:5432/uppd'
+export SECRET_KEY='' # my secret key
+export STATIC_URL='/static/'
